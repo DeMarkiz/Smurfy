@@ -1,4 +1,6 @@
 from pathlib import Path
+
+import stripe
 from dotenv import load_dotenv
 import os
 from datetime import timedelta
@@ -15,11 +17,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret")
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
+
+# Stripe settings
+STRIPE_PUBLIC_KEY = 'pk_test_51Qlx19RQU38CNZFJvtrdWbhDHO7qN3C5HcUCTeCEwC3bLB8waziRCQRKOpfMY1AOvhEn249dBxZdJWdGMfehOrXP00EJGeMzDx'
+STRIPE_SECRET_KEY = 'sk_test_51Qlx19RQU38CNZFJZWj5q2HcHIgPwnAjso19kKDsNHFFxcjOf3kii3dypBeM4kIgpaYkRkUiGgXoP1kRHx9Z3Day00GbHZwrEt'
+
+stripe.api_key = STRIPE_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -34,10 +43,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     'users',
+    'smurfy',
     "drf_yasg",
     "corsheaders",
     "django_celery_beat",
     "django_filters",
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
@@ -55,7 +66,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,6 +90,11 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication"
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=256),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # Database
@@ -129,17 +145,17 @@ USE_TZ = True
 
 # Setting up CORS
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:127.0.0.1:8000",  # Замените на адрес вашего фронтенд-сервера
-    "https://read-and-write.example.com",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://read-and-write.example.com",  # Замените на адрес вашего фронтенд-сервера
-    # и добавьте адрес бэкенд-сервера
-]
-
-CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:127.0.0.1:8000",  # Замените на адрес вашего фронтенд-сервера
+#     "https://read-and-write.example.com",
+# ]
+#
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://read-and-write.example.com",  # Замените на адрес вашего фронтенд-сервера
+#     # и добавьте адрес бэкенд-сервера
+# ]
+#
+# CORS_ALLOW_ALL_ORIGINS = False
 
 # Настройки для Celery
 # URL-адрес брокера сообщений
@@ -171,6 +187,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "media/"

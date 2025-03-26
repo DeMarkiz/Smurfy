@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Регистрация</h2>
+<form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="phone" class="form-label">Номер телефона</label>
+        <input type="text" class="form-control" id="phone" name="phone" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Пароль</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="mb-3">
+        <label for="city" class="form-label">Город (необязательно)</label>
+        <input type="text" class="form-control" id="city" name="city">
+    </div>
+    <div class="mb-3">
+        <label for="avatar" class="form-label">Аватар (необязательно)</label>
+        <input type="file" class="form-control" id="avatar" name="avatar">
+    </div>
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+</form>
+{% endblock %}

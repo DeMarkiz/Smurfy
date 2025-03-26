@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p>{{ post.content }}</p>
+<p class="text-muted small">Опубликовано: {{ post.created_at|date:"d.m.Y" }}</p>
+
+{% if post.is_paid %}
+    {% if subscription %}
+        <p>Вы подписаны на этот пост до {{ subscription.valid_until|date:"d.m.Y" }}.</p>
+    {% else %}
+        <p>{{ message }}</p>
+        <a href="{% url 'subscribe' post.id %}" class="btn btn-success">Подписаться</a>
+    {% endif %}
+{% endif %}
+{% endblock %}

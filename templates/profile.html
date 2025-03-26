@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Профиль</h2>
+<div class="card mb-4">
+    <div class="card-body text-center">
+        {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Аватар" class="rounded-circle mb-3" width="150">
+        {% else %}
+            <img src="https://via.placeholder.com/150" alt="Аватар" class="rounded-circle mb-3">
+        {% endif %}
+        <h5 class="card-title">{{ user.phone }}</h5>
+        <p class="card-text">Город: {{ user.city }}</p>
+        <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="city" class="form-label">Город</label>
+                <input type="text" class="form-control" id="city" name="city" value="{{ user.city }}">
+            </div>
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Аватар</label>
+                <input type="file" class="form-control" id="avatar" name="avatar">
+            </div>
+            <button type="submit" class="btn btn-primary">Обновить профиль</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

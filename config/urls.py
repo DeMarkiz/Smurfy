@@ -1,22 +1,28 @@
-"""
-URL configuration for config project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from users.views import RegisterView, LoginView, ProfileView, RegisterAPIView, LoginAPIView, ProfileAPIView
+from smurfy.views import PostListCreateView, PostDetailView, SubscriptionPaymentView, SubscribeView
 
 urlpatterns = [
+    # Админка
     path('admin/', admin.site.urls),
+
+    # API пользователей
+    path('api/users/', include('users.urls')),  # Маршруты для пользователей (API)
+    path('api/smurfy/', include('smurfy.urls')),  # Маршруты для контента (API)
+
+    # HTML-страницы
+    path('register/', RegisterView.as_view(), name='register-html'),  # Регистрация
+    path('login/', LoginView.as_view(), name='login-html'),           # Вход
+    path('profile/', ProfileView.as_view(), name='profile-html'),     # Профиль
+    path('posts/', PostListCreateView.as_view(), name='post-list'),  # Список постов
+    path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail-html'),
+    path('posts/<int:post_id>/subscribe/', SubscribeView.as_view(), name='subscribe'),
+    path('subscribe/pay/', SubscriptionPaymentView.as_view(), name='subscribe-pay'),
+
+    # API-маршруты
+    path('api/users/register/', RegisterAPIView.as_view(), name='api-register'),
+    path('api/users/login/', LoginAPIView.as_view(), name='api-login'),
+    path('api/users/profile/', ProfileAPIView.as_view(), name='api-profile'),
+
 ]
