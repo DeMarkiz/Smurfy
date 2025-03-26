@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .models import CustomUser
 
@@ -20,12 +21,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # Создаем пользователя с использованием метода .get() для необязательных полей
-        user = CustomUser.objects.create_user(
-            phone=validated_data['phone'],                # Обязательное поле
-            password=validated_data['password'],          # Обязательное поле
-            city=validated_data.get('city', None),        # Устанавливаем None, если город не передан
-            avatar=validated_data.get('avatar', None)     # Устанавливаем None, если аватар не передан
+        user = CustomUser.objects.create(
+            phone=validated_data['phone'],
+            password=make_password(validated_data['password']),
+            city=validated_data.get('city', None),  # Используем .get() с fallback на None
+            avatar=validated_data.get('avatar', None)  # Используем .get() с fallback на None
         )
         return user
 

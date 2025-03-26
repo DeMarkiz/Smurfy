@@ -97,27 +97,20 @@ class ProfileAPIView(APIView):
 
 
 class LoginView(View):
-    """
-    View для входа пользователя через HTML-форму.
-    """
-    def get(self, request):
-        # Отображение формы входа
-        return render(request, 'login.html')
-
     def post(self, request):
-        # Получаем данные из формы
         phone = request.POST.get('phone')
         password = request.POST.get('password')
 
-        # Аутентификация пользователя
         user = authenticate(phone=phone, password=password)
         if user is not None:
-            # Авторизация пользователя
-            login(request, user)
-            # Редирект на страницу профиля после успешного входа
+            refresh = RefreshToken.for_user(user)
+
+            # Сохраняем токен в сессии
+            request.session['access_token'] = str(refresh.access_token)
+
+            # Редирект на страницу профиля
             return redirect('profile')
         else:
-            # Если аутентификация не удалась, возвращаем форму с ошибкой
             return render(request, 'login.html', {'error': 'Неверный номер телефона или пароль'})
 
 

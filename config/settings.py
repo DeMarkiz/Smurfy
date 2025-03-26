@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django_filters",
     "phonenumber_field",
+
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.JWTAuthtenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
